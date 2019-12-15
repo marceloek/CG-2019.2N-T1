@@ -82,43 +82,41 @@ function init(){
     // arvores
     var tree, tree_scale, y_position;
     for(var i = 0; i < 20; i++){
-        y_position = ground_y_position;
         tree_scale = 10;
         
         loader_tree1.load('/scene.gltf', function(gltf) {
-            tree_load(gltf, this.scale, this.y_position);
-        }.bind({scale: tree_scale, y_position}));
+            tree_load(gltf, this.scale);
+        }.bind({scale: tree_scale}));
 
         tree_scale = 2;
 
         loader_tree2.load('/scene.gltf', function(gltf) {
-            tree_load(gltf, this.scale, this.y_position);
-        }.bind({scale: tree_scale, y_position}));
+            tree_load(gltf, this.scale);
+        }.bind({scale: tree_scale}));
 
         tree_scale = 2;
 
         loader_tree3.load('/scene.gltf', function(gltf) {
-            tree_load(gltf, this.scale, this.y_position);
-        }.bind({scale: tree_scale, y_position}));
+            tree_load(gltf, this.scale);
+        }.bind({scale: tree_scale}));
 
         tree_scale = 1.2;
 
         loader_tree4.load('/scene.gltf', function(gltf) {
-            tree_load(gltf, this.scale, this.y_position);
-        }.bind({scale: tree_scale, y_position}));
+            tree_load(gltf, this.scale);
+        }.bind({scale: tree_scale}));
 
-        tree_scale = 35;
-        y_position = ground_y_position - 630;
+        tree_scale = 0.8;
 
         loader_tree5.load('/scene.gltf', function(gltf) {
-            tree_load(gltf, this.scale, this.y_position);
-        }.bind({scale: tree_scale, y_position}));
+            tree_load(gltf, this.scale);
+        }.bind({scale: tree_scale}));
     } 
     
-    function tree_load(gltf, scale, y_position){
+    function tree_load(gltf, scale){
         tree = gltf.scene.children[0];
         tree.scale.set(scale, scale, scale);
-        tree.position.y = y_position;
+        tree.position.y = ground_y_position;
         tree.position.z = (Math.random() > 0.5 ? -1 : 1) * (Math.random() * 5000);
         tree.position.x = (Math.random() > 0.5 ? -1 : 1) * (Math.random() * 5000);
 
