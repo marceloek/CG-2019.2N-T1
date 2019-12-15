@@ -1,13 +1,11 @@
 import * as THREE from './libs/three.js/build/three.module.js';
 import { OrbitControls } from './libs/three.js/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from './libs/three.js/examples/jsm/loaders/GLTFLoader.js';
-import { RGBELoader } from './libs/three.js/examples/jsm/loaders/RGBELoader.js';
-import { PMREMGenerator } from './libs/three.js/examples/jsm/pmrem/PMREMGenerator.js';
 
 var scene, camera;
-var loader = new THREE.TextureLoader();
 var renderer = new THREE.WebGLRenderer();
-var loader_poke = new GLTFLoader();
+var loader = new THREE.TextureLoader();
+var loader_rayquaza = new GLTFLoader().setPath( 'objects/rayquaza/' );
 
 init();
 animate();
@@ -18,23 +16,24 @@ function init(){
 
     // cena
     scene = new THREE.Scene();
-    scene.fog = new THREE.Fog( 0xadc8f0, 5, 18000 );
+    scene.fog = new THREE.Fog( 0xadc8f0, 15, 10000 );
+
+    // ceu
+    scene.background = new THREE.Color( 0x87CEEB );
 
     // camera
-    camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 10000 );
-    camera.position.set( -5000, 500, 10 );
+    camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 15000 );
+    camera.position.set( 100, 500, 3500 );
 
     // luz
     scene.add( new THREE.AmbientLight( 0x666666 ) );
 
-    var light = new THREE.DirectionalLight( 0xffffff, 1 );
+    var light = new THREE.DirectionalLight( 0xffffff, 1.2 );
     light.position.set( 50, 200, 100 );
-    light.position.multiplyScalar( 1.3 );
-
     scene.add( light );
 
     // chao
-    var groundTexture = loader.load( 'textures/terrain/grasslight-big.jpg' );
+    var groundTexture = loader.load( 'textures/terrain/21.jpg' );
     groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
     groundTexture.repeat.set( 25, 25 );
     groundTexture.anisotropy = 16;
@@ -54,31 +53,13 @@ function init(){
     controls.maxDistance = 5000;
 
     // pokemon
-    new RGBELoader()
-        .setDataType( THREE.UnsignedByteType )
-        .setPath( 'textures/sky/' )
-        .load( 'loc00184-22-8k.hdr', function ( texture ) {
-            var options = {
-                minFilter: texture.minFilter,
-                magFilter: texture.magFilter
-            };
-            scene.background = new THREE.WebGLRenderTargetCube( 8096, 8096, options ).fromEquirectangularTexture( renderer, texture );
+    var rayquaza;
+    loader_rayquaza.load('/scene.gltf',pokemon_load);
 
-            var pmremGenerator = new PMREMGenerator( renderer );
-            var envMap = pmremGenerator.fromEquirectangular( texture ).texture;
-            pmremGenerator.dispose();
-            // model
-            var loader = new GLTFLoader().setPath( 'objects/rayquaza/' );
-            loader.load( 'scene.gltf', function ( gltf ) {
-                gltf.scene.traverse( function ( child ) {
-                    if ( child.isMesh ) {
-                        child.material.envMap = envMap;
-                    }
-                } );
-                scene.add( gltf.scene );
-            } );
-    } );
-
+    function pokemon_load(gltf){
+        rayquaza = gltf.scene.children[0];
+        scene.add(rayquaza);
+    }
 }
             
 function animate() {
