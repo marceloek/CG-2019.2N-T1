@@ -2,7 +2,7 @@ import * as THREE from './libs/three.js/build/three.module.js';
 import { OrbitControls } from './libs/three.js/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from './libs/three.js/examples/jsm/loaders/GLTFLoader.js';
 
-var scene, camera, controls;
+var scene, camera, controls, rayquaza;
 var renderer = new THREE.WebGLRenderer();
 var loader_ground = new THREE.TextureLoader();
 var loader_rayquaza = new GLTFLoader().setPath( 'objects/rayquaza/' );
@@ -13,13 +13,12 @@ var loader_tree4 = new GLTFLoader().setPath( 'objects/tree/4/' );
 var loader_tree5 = new GLTFLoader().setPath( 'objects/tree/5/' );
 var loader_rock1 = new GLTFLoader().setPath( 'objects/rock/1/' );
 var loader_portal = new GLTFLoader().setPath( 'objects/rock/2/' );
-var loader_pokeball = new GLTFLoader().setPath( 'objects/pokeball' );
+var loader_texture = new THREE.TextureLoader();
+// var loader_pokeball = new GLTFLoader().setPath( 'objects/pokeball' );
 var ground_y_position = -250;
 var ground_x_rotation = - Math.PI / 2;
 var rayquaza_y_position = ground_y_position + 500;
 var rayquaza_z_rotation = - Math.PI;
-var rayquaza;
-var camera_z_rotation, camera_x_rotation;
 
 init();
 animate();
@@ -37,26 +36,26 @@ function init(){
 
     // camera
     camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 15000 );
-    camera.position.set( 0, 2500, 2500 );
+    camera.position.set( 0, 4000, 2500 );
 
     // luz
     scene.add( new THREE.AmbientLight( 0xaaaaaa ) );
 
     var light = new THREE.DirectionalLight( 0xdfebff, 2.5 );
-    light.position.set(-1500,5000,-5000 );
+    light.position.set(-4750, 3000, -3500);
 
     scene.add( light );
 
     // chao
     var groundTexture = loader_ground.load( 'textures/terrain/21.jpg' );
     groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
-    groundTexture.repeat.set( 25, 25 );
+    groundTexture.repeat.set( 30, 30 );
     groundTexture.anisotropy = 16;
     groundTexture.encoding = THREE.sRGBEncoding;
 
     var groundMaterial = new THREE.MeshLambertMaterial( { map: groundTexture } );
 
-    var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 20000, 20000 ), groundMaterial );
+    var ground = new THREE.Mesh( new THREE.PlaneBufferGeometry( 30000, 30000 ), groundMaterial );
     ground.position.y = ground_y_position;
     ground.rotation.x = ground_x_rotation;
     scene.add( ground );
@@ -65,14 +64,13 @@ function init(){
     controls = new OrbitControls( camera, renderer.domElement );
     controls.minDistance = 1000;
     controls.maxDistance = 4000;
-    controls.enableKeys = false;
-    controls.enablePan = false;
 
     // sol
+    var texture = loader_texture.load("images/facebook-angry.svg");
     var geo_sol = new THREE.SphereGeometry( 1000, 80, 80 );
-    var mat_sol = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+    var mat_sol = new THREE.MeshPhongMaterial({map: texture});
     var sol = new THREE.Mesh( geo_sol, mat_sol );
-    sol.position.set(-1500,5000,-5000 );
+    sol.position.set(-4750, 3000, -3500);
     scene.add( sol );
 
     // pokemon
@@ -84,6 +82,8 @@ function init(){
         rayquaza.position.set(0,rayquaza_y_position,0);
         rayquaza.rotation.z = rayquaza_z_rotation;
         scene.add(rayquaza);
+
+        rayquaza.add(camera);
     }
 
     // portal
@@ -192,44 +192,69 @@ function init(){
              
 function animate() {
     requestAnimationFrame(animate);
-
     controls.update();
 
-    // camera.position.x = Math.cos( camera_x_rotation ) * 80;
-    // camera.position.z = Math.sin( camera_z_rotation ) * 80;
-    // camera.lookAt( scene.position );
+    if(rayquaza){
+        camera.lookAt( rayquaza.position );
+        animate_pokemon();
+    }
 
     renderer.render( scene, camera );
 };
 
 // movimentacao pokemon
-function onKeyDown(event) {
-    // var timer = Date.now() * 0.001;
-    // camera.position.x = Math.cos( timer ) * 800;
-    // camera.position.z = Math.sin( timer ) * 800;
-
-    var keyCode = event.which;
+function onKeyDown(keyCode) {
     var velocidade = 100;
-    if (keyCode == 87) {                   // w
-        rayquaza.position.z -= velocidade; 
-    } else if (keyCode == 83) {            // s
-        rayquaza.position.z += velocidade;
-    } else if (keyCode == 65) {            // a
-        rayquaza.rotation.z += Math.PI / 32;
-        //camera_z_rotation -= 90 * Math.PI / 2;
-    } else if (keyCode == 68) {            // d
-        rayquaza.rotation.z -= Math.PI / 32;
-        //camera_x_rotation -= Math.PI / 360;
-    } else if (keyCode == 81) {            // q
-        if(rayquaza.position.y >= ground_y_position+200)
-            rayquaza.position.y -= velocidade;
-    } else if (keyCode == 69) {            // e
-        rayquaza.position.y += velocidade;
-    } else if (keyCode == 32) {            // espaco
-        rayquaza.position.set(0,rayquaza_y_position,0);
-        rayquaza.rotation.x = rayquaza_z_rotation /2;
-        rayquaza.rotation.y = 0;
-        rayquaza.rotation.z = rayquaza_z_rotation;
+    var diff = rayquaza_z_rotation - rayquaza.rotation.z;
+    
+    switch(keyCode){
+        case 'w':
+            rayquaza.position.z -= Math.cos(diff) * velocidade;
+            rayquaza.position.x += Math.sin(diff) * velocidade;
+            break;
+
+        case 's':
+            rayquaza.position.z += Math.cos(diff) * velocidade;
+            rayquaza.position.x -= Math.sin(diff) * velocidade;
+            break;
+
+        case 'a':
+            rayquaza.rotation.z += Math.PI / 30;
+            break;
+
+        case 'd':
+            rayquaza.rotation.z -= Math.PI / 30;
+            break;
+
+        case ' ':
+            rayquaza.position.set(0,rayquaza_y_position,0);
+            rayquaza.rotation.x = rayquaza_z_rotation /2;
+            rayquaza.rotation.y = 0;
+            rayquaza.rotation.z = rayquaza_z_rotation;
+            break;
     }
 };
-document.addEventListener("keydown", onKeyDown, false);
+
+var sentido = 1;
+
+function animate_pokemon(){
+    var limite_min = ground_y_position + 350, limite_max = 450;
+    if(rayquaza.position.y <= limite_min || rayquaza.position.y >= limite_max){
+        sentido *= -1;
+    }
+    rayquaza.position.y += 5 * sentido;
+}
+
+document.addEventListener("keydown", addKey);
+document.addEventListener("keyup", removeKey);
+
+var keys = {};
+
+function addKey(event){
+    keys[event.key] = true;
+    for(var i in keys) onKeyDown(i);
+}
+
+function removeKey(event){
+    delete keys[event.key];
+}
