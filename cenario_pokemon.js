@@ -42,7 +42,7 @@ function init(){
     scene.add( new THREE.AmbientLight( 0xaaaaaa ) );
 
     var light = new THREE.DirectionalLight( 0xdfebff, 2.5 );
-    light.position.set(-4750, 3000, -3500);
+    light.position.set(-4750, 5000, -3500);
 
     scene.add( light );
 
@@ -71,19 +71,25 @@ function init(){
     var geo_sol = new THREE.SphereGeometry( 1000, 80, 80 );
     var mat_sol = new THREE.MeshPhongMaterial({map: texture});
     var sol = new THREE.Mesh( geo_sol, mat_sol );
-    sol.position.set(-4750, 3000, -3500);
+    sol.position.set(-4750, 5000, -3500);
     scene.add( sol );
 
     // pokemon
+    var anima;
     loader_rayquaza.load('/scene.gltf',pokemon_load);
 
     function pokemon_load(gltf){
         rayquaza = gltf.scene.children[0];
+        anima = new THREE.AnimationMixer(rayquaza);
+        gltf.animations.forEach((clip) => {
+            anima.clipAction(clip).play();
+        });
+
         rayquaza.scale.set(0.7,0.7,0.7);
         rayquaza.position.set(0,rayquaza_y_position,0);
         rayquaza.rotation.z = rayquaza_z_rotation;
-        scene.add(rayquaza);
 
+        scene.add(rayquaza);
         rayquaza.add(camera);
     }
 
@@ -107,18 +113,18 @@ function init(){
         [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
     ];
 
-    var pedra_z_position = -3500, pedra_x_position;
+    var pedra_z_position = -3000, pedra_x_position;
 
     for(var i in rockPosition){
-        pedra_z_position += 400;
-        pedra_x_position = -4750;
+        pedra_z_position += 370;
+        pedra_x_position = -3450;
 
         for(var j in rockPosition[i]){
-            pedra_x_position += 400;
+            pedra_x_position += 300;
 
             if(rockPosition[i][j]){
                 loader_rock1.load('/scene.gltf', function(gltf) {
-                    rock_load(gltf, 150, this.pedra_z_position, this.pedra_x_position);
+                    rock_load(gltf, 0.55, this.pedra_z_position, this.pedra_x_position);
                 }.bind({pedra_z_position: pedra_z_position, pedra_x_position: pedra_x_position}));
             }
         }
@@ -127,7 +133,7 @@ function init(){
     function rock_load(gltf, scale, pedra_z_position, pedra_x_position){
         var rock = gltf.scene.children[0];
         rock.scale.set(scale, scale, scale);
-        rock.position.y = ground_y_position + 70;
+        rock.position.y = ground_y_position - 70;
         rock.position.z = pedra_z_position;
         rock.position.x = pedra_x_position;
         scene.add(rock);
@@ -181,8 +187,8 @@ function init(){
     }
 
     function ajustaPosicao(tree){
-        var z = 4000;
-        var x = 3000;
+        var z = 3500;
+        var x = 4000;
         if((tree.position.z > -z || tree.position.z < z) && (tree.position.x > -x || tree.position.x < x)){
             var p = Math.random() > 0.5 ? 'x' : 'z';
             tree.position[p] += (tree.position[p] > 0 ? 1 : -1) * (p == 'x' ? x : z);
