@@ -64,6 +64,7 @@ function init(){
     controls = new OrbitControls( camera, renderer.domElement );
     controls.minDistance = 1000;
     controls.maxDistance = 4000;
+    controls.enableRotate = false;
 
     // sol
     var texture = loader_texture.load("images/facebook-angry.svg");
