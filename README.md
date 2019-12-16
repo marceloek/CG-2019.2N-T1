@@ -9,6 +9,4 @@
 - D - rotaciona para a esquerda;
 - W - move para frente;
 - S - move para trás;
-- Q - move para cima;
-- E - move para baixo;
 - espaço - reseta para a posição inicial do pokemon.
