@@ -14,4 +14,4 @@
 - tecla ESPACE - reseta para a posição inicial do pokemon;
 - botão direito do mouse - ajusta visualização da câmera;
 
-#### O acesso para o funcionamento do trabalho é dado no link a seguir: [Cenário pokemon](marceloek.github.io/CG-2019.2N-T1)
+#### O acesso para o funcionamento do trabalho é dado no link a seguir: [Cenário pokemon](http://marceloek.github.io/CG-2019.2N-T1)
