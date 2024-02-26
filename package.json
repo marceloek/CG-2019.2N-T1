@@ -1,0 +1,25 @@
+{
+  "name": "cg-2019-2n-t1",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Trabalho com o objetivo de apresentar um ambiente composto por árvores, céu, profundidade, fonte de luz (sol) e o mais importante, a movimentação de um ou mais Pokémon, a fim de criar um simples cenário.",
+  "keywords": [
+    "cg",
+    "three",
+    "pokemon"
+  ],
+  "author": "Marcelo Knob",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.111.0"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}
