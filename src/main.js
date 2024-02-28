@@ -4,18 +4,20 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
+const baseRepo = "/CG-2019.2N-T1";
+
 var scene, camera, controls, rayquaza;
 var renderer = new THREE.WebGLRenderer();
 var loader_ground = new THREE.TextureLoader();
-var loader_rayquaza = new GLTFLoader().setPath("/objects/rayquaza/");
-var loader_tree1 = new GLTFLoader().setPath("/objects/tree/1/");
-var loader_tree2 = new GLTFLoader().setPath("/objects/tree/2/");
-var loader_tree3 = new GLTFLoader().setPath("/objects/tree/3/");
-var loader_tree4 = new GLTFLoader().setPath("/objects/tree/4/");
-var loader_tree5 = new GLTFLoader().setPath("/objects/tree/5/");
-var loader_rock1 = new GLTFLoader().setPath("/objects/rock/1/");
-var loader_portal = new GLTFLoader().setPath("/objects/rock/2/");
-// var loader_pokeball = new GLTFLoader().setPath("/objects/pokeball");
+var loader_rayquaza = new GLTFLoader().setPath(`${baseRepo}/objects/rayquaza/`);
+var loader_tree1 = new GLTFLoader().setPath(`${baseRepo}/objects/tree/1/`);
+var loader_tree2 = new GLTFLoader().setPath(`${baseRepo}/objects/tree/2/`);
+var loader_tree3 = new GLTFLoader().setPath(`${baseRepo}/objects/tree/3/`);
+var loader_tree4 = new GLTFLoader().setPath(`${baseRepo}/objects/tree/4/`);
+var loader_tree5 = new GLTFLoader().setPath(`${baseRepo}/objects/tree/5/`);
+var loader_rock1 = new GLTFLoader().setPath(`${baseRepo}/objects/rock/1/`);
+var loader_portal = new GLTFLoader().setPath(`${baseRepo}/objects/rock/2/`);
+// var loader_pokeball = new GLTFLoader().setPath(`${baseRepo}/objects/pokeball`);
 var loader_texture = new THREE.TextureLoader();
 var ground_y_position = -250;
 var ground_x_rotation = -Math.PI / 2;
@@ -54,7 +56,7 @@ function init() {
   scene.add(light);
 
   // chao
-  var groundTexture = loader_ground.load("/textures/terrain/10.jpg");
+  var groundTexture = loader_ground.load(`${baseRepo}/textures/terrain/10.jpg`);
   groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
   groundTexture.repeat.set(30, 30);
   groundTexture.anisotropy = 16;
@@ -77,7 +79,7 @@ function init() {
   controls.enableRotate = false;
 
   // sol
-  var texture = loader_texture.load("/textures/sun/angry-emoji.svg");
+  var texture = loader_texture.load(`${baseRepo}/textures/sun/angry-emoji.svg`);
   var geo_sol = new THREE.SphereGeometry(1000, 80, 80);
   var mat_sol = new THREE.MeshPhongMaterial({ map: texture });
   var sol = new THREE.Mesh(geo_sol, mat_sol);
@@ -86,7 +88,7 @@ function init() {
 
   // pokemon
   var anima;
-  loader_rayquaza.load("/scene.gltf", pokemon_load);
+  loader_rayquaza.load("scene.gltf", pokemon_load);
 
   function pokemon_load(gltf) {
     rayquaza = gltf.scene.children[0];
@@ -105,7 +107,7 @@ function init() {
 
   // portal
   var portal;
-  loader_portal.load("/scene.gltf", portal_load);
+  loader_portal.load("scene.gltf", portal_load);
 
   function portal_load(gltf) {
     portal = gltf.scene.children[0];
@@ -135,7 +137,7 @@ function init() {
 
       if (rockPosition[i][j]) {
         loader_rock1.load(
-          "/scene.gltf",
+          "scene.gltf",
           function (gltf) {
             rock_load(gltf, 0.55, this.pedra_z_position, this.pedra_x_position);
           }.bind({
@@ -162,7 +164,7 @@ function init() {
     tree_scale = 10;
 
     loader_tree1.load(
-      "/scene.gltf",
+      "scene.gltf",
       function (gltf) {
         tree_load(gltf, this.scale);
       }.bind({ scale: tree_scale })
@@ -171,7 +173,7 @@ function init() {
     tree_scale = 2;
 
     loader_tree2.load(
-      "/scene.gltf",
+      "scene.gltf",
       function (gltf) {
         tree_load(gltf, this.scale);
       }.bind({ scale: tree_scale })
@@ -180,7 +182,7 @@ function init() {
     tree_scale = 2;
 
     loader_tree3.load(
-      "/scene.gltf",
+      "scene.gltf",
       function (gltf) {
         tree_load(gltf, this.scale);
       }.bind({ scale: tree_scale })
@@ -189,7 +191,7 @@ function init() {
     tree_scale = 1.2;
 
     loader_tree4.load(
-      "/scene.gltf",
+      "scene.gltf",
       function (gltf) {
         tree_load(gltf, this.scale);
       }.bind({ scale: tree_scale })
@@ -198,7 +200,7 @@ function init() {
     tree_scale = 0.8;
 
     loader_tree5.load(
-      "/scene.gltf",
+      "scene.gltf",
       function (gltf) {
         tree_load(gltf, this.scale);
       }.bind({ scale: tree_scale })
